@@ -1,0 +1,29 @@
+[Unit]
+Description=Consul
+After=docker.service
+Requires=docker.service
+After=etcd.service
+Requires=etcd.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+Environment=DOCKER_REPO=progrium/consul
+Environment=VERSION=latest
+Environment=CONTAINER=consul
+
+# make sure /etc/systemd/resolved.conf.d dir exists so we can add Consul's DNS resolver to system
+ExecStartPre=-/usr/bin/mkdir -p /etc/systemd/resolved.conf.d
+
+ExecStartPre=-/usr/bin/docker kill ${CONTAINER}
+ExecStartPre=-/usr/bin/docker rm ${CONTAINER}
+ExecStartPre=-/user/bin/mkdir -p /var/consul
+ExecStartPre=/usr/bin/docker pull ${DOCKER_REPO}:${VERSION}
+ExecStart=/usr/bin/docker run --name ${CONTAINER} --restart=always --volume /var/consul:/data --hostname %H -p 8300:8300 -p 8301:8301 -p 8301:8301/udp -p 8302:8302 -p 8302:8302/udp -p 8400:8400 -p 8500:8500 -p 8600:53/udp -e SERVICE_TAGS=web -e SERVICE_8500_NAME=dashboard ${DOCKER_REPO}:${VERSION} -server -advertise ${COREOS_PRIVATE_IPV4} -bootstrap-expect 1
+ExecStartPost=/bin/bash -c 'sleep 1; echo -e "[Resolve]\nDNS=$(docker inspect --format \'{{ .NetworkSettings.IPAddress }}\' ${CONTAINER})" > /etc/systemd/resolved.conf.d/00-consul-dns.conf && systemctl restart systemd-resolved'
+ExecStop=/usr/bin/docker stop ${CONTAINER}
+ExecStopPost=/bin/bash -c 'rm /etc/systemd/resolved.conf.d/00-consul-dns.conf && systemctl restart systemd-resolved'
+ExecStop=-/user/bin/docker rm ${CONTAINER}
+
+[X-Fleet]
+Global=true

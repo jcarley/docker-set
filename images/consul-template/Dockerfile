@@ -1,0 +1,23 @@
+FROM debian:wheezy
+
+MAINTAINER Jeff Carley <jeff.carley@gmail.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ENV REFRESHED_AT 2015-05-09
+
+ENV CONSUL_TEMPLATE_VERSION=0.9.0
+
+ADD https://github.com/hashicorp/consul-template/releases/download/v${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz /
+
+RUN tar zxvf consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz && \
+    mv consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64/consul-template /usr/local/bin/consul-template && \
+    rm -rf /consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz && \
+    rm -rf /consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64 && \
+    mkdir -p /consul-template /consul-template/config.d /consul-template/templates
+
+RUN apt-get -qqy update && \
+    apt-get install -qqy curl wget && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+
+CMD ["/usr/local/bin/consul-template"]

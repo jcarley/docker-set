@@ -1,0 +1,28 @@
+
+RUN apt-get -qqy update && \
+    apt-get install -y \
+      git \
+      curl \
+      autoconf \
+      build-essential \
+      libbz2-dev \
+      libcurl4-openssl-dev \
+      libevent-dev \
+      libffi-dev \
+      libglib2.0-dev \
+      libjpeg-dev \
+      liblzma-dev \
+      libmysqlclient-dev \
+      libncurses-dev \
+      libpq-dev \
+      libreadline-dev \
+      libssl-dev \
+      libxml2-dev \
+      libxslt-dev \
+      libyaml-dev \
+      zlib1g-dev \
+  && rm -rf /var/lib/apt/lists/*
+
+
+ADD ./versions.txt /root/versions.txt
+RUN xargs -L 1 rbenv install < /root/versions.txt

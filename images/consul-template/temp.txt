@@ -1,0 +1,42 @@
+curl -X PUT -d '{"Datacenter": "dc1", "Node": "node01", "Address": "192.168.27.27", "Service": {"Service": "search", "Port": 9293}}' http://192.168.33.10:8500/v1/catalog/register
+
+
+curl -X PUT -d '{"Datacenter": "dc1", "Node": "node01"}' http://192.168.33.10:8500/v1/catalog/deregister
+
+
+curl http://192.168.33.10:8500/v1/catalog/service/search
+
+
+
+
+curl -X PUT -d '{"Datacenter": "dc1", "Node": "node01", "Address": "192.168.27.27", "Service": {"Service": "search", "Port": 9293}}' http://192.168.33.10:8500/v1/agent/service/register
+
+curl -X PUT -d '{"ID": "search01", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9292}' http://192.168.33.10:8500/v1/agent/service/register
+
+{
+  "ID": "search01",
+  "Name": "search",
+  "Tags": ["v1"],
+  "Address": "192.168.27.27",
+  "Port": 9292
+}
+
+
+# Register services
+curl -X PUT -d '{"ID": "search01", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9292}' http://192.168.33.10:8500/v1/agent/service/register
+curl -X PUT -d '{"ID": "search02", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9293}' http://192.168.33.10:8500/v1/agent/service/register
+curl -X PUT -d '{"ID": "search03", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9294}' http://192.168.33.10:8500/v1/agent/service/register
+
+
+# Deregister services
+curl http://192.168.33.10:8500/v1/agent/service/deregister/search01
+curl http://192.168.33.10:8500/v1/agent/service/deregister/search02
+curl http://192.168.33.10:8500/v1/agent/service/deregister/search03
+
+
+# List services
+curl http://192.168.33.10:8500/v1/catalog/service/search
+
+
+# Run consule-template and produce a result file
+./consul-template -consul 192.168.33.10:8500 -template="consul.ctmpl:consul.result:service nginx restart" -dry -once

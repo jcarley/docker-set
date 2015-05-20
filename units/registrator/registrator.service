@@ -1,0 +1,22 @@
+[Unit]
+Description=Registrator
+After=consul-server.service
+Requires=consul-server.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Restart=always
+Environment=DOCKER_REPO=gliderlabs/registrator
+Environment=VERSION=master
+Environment=CONTAINER=registrator
+
+ExecStartPre=-/usr/bin/docker kill ${CONTAINER}
+ExecStartPre=-/user/bin/docker rm ${CONTAINER}
+ExecStartPre=/usr/bin/docker pull ${DOCKER_REPO}:${VERSION}
+ExecStart=/usr/bin/docker run --name ${CONTAINER} -h ${CONTAINER} -v /var/run/docker.sock:/tmp/docker.sock \
+    ${DOCKER_REPO}:${VERSION} -internal -resync 60 consul://${COREOS_PRIVATE_IPV4}:8500
+ExecStop=-/usr/bin/docker stop ${CONTAINER}
+ExecStop=-/usr/bin/docker rm ${CONTAINER}
+
+[X-Fleet]
+Global=true

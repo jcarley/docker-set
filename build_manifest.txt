@@ -1,0 +1,5 @@
+# build consul-template first, its the base for everything else
+images/consul-template jcarley/consul-template latest
+images/nginx jcarley/nginx 1.9
+images/ruby/cruby jcarley/ruby 2.2
+images/ruby/jruby jcarley/jruby 1.7

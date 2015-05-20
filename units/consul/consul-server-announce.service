@@ -1,0 +1,18 @@
+[Unit]
+Description=Consul Server Announcer
+After=consul-server.service
+Requires=consul-server.service
+BindsTo=consul-server.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+EnvironmentFile=/etc/environment
+Environment=BOOTSTRAP_PATH=/consul/bootstrap/machines
+
+ExecStart=/bin/sh -c "while true; do etcdctl set ${BOOTSTRAP_PATH}/$(cat /etc/machine-id) ${COREOS_PRIVATE_IPV4} --ttl 60; /usr/bin/docker exec consul consul join $(etcdctl get $(etcdctl ls ${BOOTSTRAP_PATH} | tail -1)); sleep 45; done"
+ExecStop=-/usr/bin/etcdctl rm ${BOOTSTRAP_PATH}/%m
+
+
+[X-Fleet]
+Global=true
