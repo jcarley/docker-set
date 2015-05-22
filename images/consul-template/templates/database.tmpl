@@ -1,0 +1,4 @@
+{{range ls "service/database/environments"}}
+{{.Key}}:{{with $d := .Value | parseJSON}}{{if $d}}{{range $key, $attr := $d}}
+  {{$key}}: {{$attr}}{{end}}{{end}}{{end}}
+{{end}}
