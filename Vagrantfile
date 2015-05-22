@@ -29,7 +29,8 @@ $provision_script = <<-SCRIPT
   cd /home/core/docker-set
   fleetctl --endpoint=http://192.168.33.10:4001 --driver=etcd start \
     units/consul/consul-server units/consul/consul-server-announce \
-    units/registrator/registrator units/redis/redis
+    units/registrator/registrator units/redis/redis units/mysql/mysql \
+    units/rabbitmq/rabbitmq
 SCRIPT
 
 # docker pull progrium/registrator:latest

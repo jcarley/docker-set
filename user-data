@@ -5,7 +5,7 @@ coreos:
   etcd:
     addr: $public_ipv4:4001
     peer-addr: $public_ipv4:7001
-    discovery: https://discovery.etcd.io/42981d24b26fc2429b68f2155b604894
+    discovery: https://discovery.etcd.io/d47afc306fcdbb214ec5aae88dc2f850
   fleet:
     public-ip: $public_ipv4
   units:
@@ -13,6 +13,16 @@ coreos:
     command: start
   - name: fleet.service
     command: start
+  - name: fleet.socket
+    drop-ins:
+      - name: 30-ListenStream.conf
+        content: |
+          [Socket]
+          ListenStream=0.0.0.0:49153
+          Service=fleet.service
+
+          [Install]
+          WantedBy=sockets.target
   - name: docker-tcp.socket
     command: start
     enable: true

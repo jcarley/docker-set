@@ -1,0 +1,22 @@
+[Unit]
+Description=MySQL
+After=registrator.service
+Requires=registrator.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Restart=always
+Environment=DOCKER_REPO=mysql
+Environment=VERSION=5.6.24
+Environment=CONTAINER=mysql
+
+ExecStartPre=-/usr/bin/docker kill ${CONTAINER}
+ExecStartPre=-/user/bin/docker rm ${CONTAINER}
+ExecStartPre=/usr/bin/docker pull ${DOCKER_REPO}:${VERSION}
+ExecStart=/usr/bin/docker run --name ${CONTAINER} -e MYSQL_ROOT_PASSWORD=password -h ${CONTAINER} ${DOCKER_REPO}:${VERSION}
+ExecStop=-/usr/bin/docker stop ${CONTAINER}
+ExecStop=-/usr/bin/docker rm ${CONTAINER}
+
+[X-Fleet]
+Global=true
+

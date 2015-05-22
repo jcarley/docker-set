@@ -1,0 +1,22 @@
+[Unit]
+Description=Vault
+After=consul-server.service
+Requires=consul-server.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Restart=always
+Environment=DOCKER_REPO=sjourdan/vault
+Environment=VERSION=latest
+Environment=CONTAINER=vault
+
+ExecStartPre=-/usr/bin/docker kill ${CONTAINER}
+ExecStartPre=-/user/bin/docker rm ${CONTAINER}
+ExecStartPre=/usr/bin/docker pull ${DOCKER_REPO}:${VERSION}
+ExecStart=/usr/bin/docker run --cap-add IPC_LOCK -p 8200:8200 --link consul:consul --volume $PWD/config:/config --name ${CONTAINER} -h ${CONTAINER} ${DOCKER_REPO}:${VERSION} -config=/config/consul.hcl
+ExecStop=-/usr/bin/docker stop ${CONTAINER}
+ExecStop=-/usr/bin/docker rm ${CONTAINER}
+
+[X-Fleet]
+Global=true
+

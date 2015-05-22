@@ -67,11 +67,13 @@ end
 # or, to map host folders to guest folders of the same name,
 # $shared_folders = Hash[*['/home/foo/app1', '/home/foo/app2'].map{|d| [d, d]}.flatten]
 $shared_folders = {
-  './' => '/home/core/docker-set'
+  './' => '/home/core/docker-set',
+  '../submission' => '/home/core/apps/submission'
 }
 
 # Enable port forwarding from guest(s) to host machine, syntax is: { 80 => 8080 }, auto correction is enabled by default.
 $forwarded_ports = {
+  49153 => 49153,
   8081 => 18081,
   8400 => 8400,
   8500 => 8500,

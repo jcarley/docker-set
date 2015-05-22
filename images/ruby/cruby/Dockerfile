@@ -25,16 +25,23 @@ RUN rbenv init -
 # skip installing gem documentation
 RUN echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
 
-RUN buildDeps='build-essential libpq-dev libffi-dev zlib1g-dev libreadline-dev libssl-dev libcurl4-openssl-dev' \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends $buildDeps \
-    && rbenv install $RUBY_VERSION \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && apt-get purge -y --auto-remove $buildDeps
+# gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
+RUN apt-key adv --keyserver pool.sks-keyservers.net --recv-keys A4A9406876FCBD3C456770C88C718D3B5072E1F5
 
-RUN rbenv global $RUBY_VERSION
-RUN gem update --system
+ENV MYSQL_MAJOR 5.6
+
+RUN echo "deb http://repo.mysql.com/apt/debian/ wheezy mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
+
+RUN buildDeps='build-essential libmysqlclient-dev mysql-client libffi-dev zlib1g-dev libreadline-dev libssl-dev libcurl4-openssl-dev' \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends $buildDeps
+
+RUN rbenv install $RUBY_VERSION
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN rbenv global $RUBY_VERSION \
+    && gem update --system
 RUN gem install bundler && rbenv rehash
 
 RUN curl -sL https://deb.nodesource.com/setup | bash - \

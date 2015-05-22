@@ -18,6 +18,7 @@ RUN tar zxvf consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz && \
 
 RUN apt-get -qqy update && \
     apt-get install -qqy curl wget && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-CMD ["/usr/local/bin/consul-template"]
+ENTRYPOINT ["/usr/local/bin/consul-template"]
+CMD []
