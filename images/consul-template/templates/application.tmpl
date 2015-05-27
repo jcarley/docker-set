@@ -1,4 +1,5 @@
-{{range ls "service/application/environments"}}
-{{.Key}}:{{with $d := .Value | parseJSON}}{{if $d}}{{range $key, $attr := $d}}
-  {{$key}}: {{$attr}}{{end}}{{end}}{{end}}
+{{range $key, $pairs := tree "service/environments" | byKey}}
+{{$key}}:{{with $d := $pairs.application.Value | parseJSON}}{{if $d}}{{range $key2, $attr := $d}}
+  {{$key2}}: {{$attr}}{{end}}{{end}}{{end}}
 {{end}}
+
