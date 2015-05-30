@@ -3,3 +3,5 @@
 user-data
 images/consul-template/templates/application.yml
 images/consul-template/templates/database.yml
+seed.sh
+artifacts/

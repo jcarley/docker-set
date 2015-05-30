@@ -23,9 +23,15 @@ curl -X PUT -d '{"ID": "search01", "Name": "search", "Tags": ["v1"], "Address": 
 
 
 # Register services
-curl -X PUT -d '{"ID": "search01", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9292}' http://192.168.33.10:8500/v1/agent/service/register
+curl -X PUT http://192.168.33.10:8500/v1/agent/service/register \
+  -d '{"ID": "search01", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9292}' 
+
 curl -X PUT -d '{"ID": "search02", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9293}' http://192.168.33.10:8500/v1/agent/service/register
 curl -X PUT -d '{"ID": "search03", "Name": "search", "Tags": ["v1"], "Address": "192.168.27.27", "Port": 9294}' http://192.168.33.10:8500/v1/agent/service/register
+
+
+# Query for a service using curl.  This adds a tag to the query
+curl -sS http://192.168.33.10:8500/v1/catalog/service/rails?tag=production
 
 
 # Deregister services

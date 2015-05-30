@@ -14,7 +14,7 @@ RUN tar zxvf consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz && \
     mv consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64/consul-template /usr/local/bin/consul-template && \
     rm -rf /consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.tar.gz && \
     rm -rf /consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64 && \
-    mkdir -p /consul-template /consul-template/config.d /consul-template/templates
+    mkdir -p /consul-template /consul-template/config.d /consul-template/templates /consul-template/artifacts
 
 RUN apt-get -qqy update && \
     apt-get install -qqy curl wget && \
