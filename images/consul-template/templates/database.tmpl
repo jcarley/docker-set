@@ -1,6 +1,0 @@
-{{range $key, $pairs := tree "service/environments" | byKey}}
-{{$key}}:{{with $d := $pairs.database.Value | parseJSON}}{{if $d}}{{range $key2, $attr := $d}}
-  {{$key2}}: {{$attr}}{{end}}{{end}}{{end}}{{with $database_srv := service (printf "%s.%s" $key "mysql")}}
-  host: {{range $database_srv}}{{.Address}}{{end}}{{end}}
-{{end}}
-

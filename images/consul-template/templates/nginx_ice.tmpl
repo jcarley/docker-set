@@ -1,6 +1,0 @@
-{{with $application_env := env "APPLICATION_ENV" | toLower}}upstream ice-service {
-  least_conn;
-  {{range service (printf "%s.%s" $application_env "ice") "passing"}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1;
-  {{else}}server 127.0.0.1:65535; # force a 502{{end}}
-}{{end}}
-

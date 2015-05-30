@@ -1,5 +1,0 @@
-{{range $key, $pairs := tree "service/environments" | byKey}}
-{{$key}}:{{with $d := $pairs.application.Value | parseJSON}}{{if $d}}{{range $key2, $attr := $d}}
-  {{$key2}}: {{$attr}}{{end}}{{end}}{{end}}
-{{end}}
-
